@@ -5,3 +5,9 @@
 *.ear
 sample/minifymodsample/tmp
 sample/minifymodsample/eclipse
+sample/minifymodsample/tmp
+sample/minifymodsample/eclipse
+.project
+commands.py
+sample/minifymodsample/.classpath
+sample/minifymodsample/.project
