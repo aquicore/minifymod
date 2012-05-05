@@ -74,4 +74,3 @@ minifymod.gzipEnabled = true
 h2. Planned features
 
 Just leave a comment and I will see what I can do
-

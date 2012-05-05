@@ -1,6 +1,7 @@
 *.class
 
 # Package Files #
-*.jar
 *.war
 *.ear
+sample/minifymodsample/tmp
+sample/minifymodsample/eclipse

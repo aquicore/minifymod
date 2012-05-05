@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>minifymodsample</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.playframework.playclipse.playNature</nature>
+	</natures>
+	<linkedResources><link><name>minifymod-0.2.0</name><type>2</type><location>/home/mk/Dropbox/progn/Play/myModules/minifymod/sample/minifymodsample/modules/minifymod-0.2.0/app</location></link>
+<link><name>conf/minifymod-0.2.0</name><type>2</type><location>/home/mk/Dropbox/progn/Play/myModules/minifymod/sample/minifymodsample/modules/minifymod-0.2.0/conf</location></link>
+</linkedResources>
+</projectDescription>
