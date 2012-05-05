@@ -21,6 +21,7 @@ import com.googlecode.htmlcompressor.compressor.YuiJavaScriptCompressor;
 /**
  * @see http://code.google.com/p/htmlcompressor/
  * @see http://developer.yahoo.com/yui/compressor/
+ * @see https://github.com/playframework/play/pull/240
  */
 public class Compression {
 	private static HtmlCompressor htmlCompressor = new HtmlCompressor();
