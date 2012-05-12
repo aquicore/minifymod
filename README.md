@@ -52,11 +52,13 @@ Exclusions
 Sometimes it is necessary to exclude one or two methods which for example delivers images or binarys. This can be done in two ways:
 
   -call Compression.excludeAction(request.action); in this action which is the same as “Controller.method” wich is the most fast and easy way. In fact it puts a variable in the renderArgs
-  -extend one of the tree classes (or all) and override isExcluded() which can be the most performant way since if it returns false all the way, it won’t check the renderArgs for a specific value for each request
+
+  -override isExcluded() which can be the most performant way since if it returns false all the way, it won’t check the renderArgs for a specific value for each request
 
 Some extras for you
 
 Since you probably want to use caching in your application, you can use the methods of the Compression.class like compressHtml(String html) or compressCss(String css), ..js, ..xml
+
 Configuration
 
 The configuration is pretty self explaining. This are the keys. They are all in their default state, so it is not necessary to include this in your application.conf if you don’t want to change the settings
