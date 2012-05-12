@@ -3,6 +3,7 @@ Minifymod - Response optimization for Play
 Since Play 1.2.x has no build in support for response optimization like minify and gzip responses this module adds this functionality using the YUI Compressor and googles htmlcompressor.
 
 The latest version of this module can be fetched from github : https://github.com/maklemenz/play-minifymod
+
 How To Use It
 
 Let’s say you have a simple controller wich delivers a hugh site:
@@ -65,6 +66,6 @@ The configuration is pretty self explaining. This are the keys. They are all in 
 	minifymod.minifyEnabled = true
 	minifymod.gzipEnabled = true
 	
-	Planned features
+Planned features
 
 Just leave a comment and I will see what I can do
