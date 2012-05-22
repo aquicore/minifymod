@@ -20,6 +20,10 @@ public class MinifyResponse extends Controller {
 		}
 	}
 	
+	/**
+	 * this is triggered after rendering is done. It takes the rendered template from response.out,
+	 * minifies it and writes it back to respone.out
+	 */
 	@Finally
 	static void compress() throws IOException {
 		if(moduleEnabled && minifyEnabled && !isExcluded()) {
@@ -40,6 +44,10 @@ public class MinifyResponse extends Controller {
 		}
 	}
 
+	/**
+	 * tells if the current action is an excluded action. Delegates to Compression.class
+	 * just here for easy overriding
+	 */
 	public static boolean isExcluded() {
 		return Compression.isExcludedAction(request);
 	}

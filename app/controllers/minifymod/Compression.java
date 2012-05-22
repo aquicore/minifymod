@@ -37,25 +37,41 @@ public class Compression {
 	private static List<String> excludedActions = new ArrayList<String>();
 
 
+	/**
+	 * returns the standard exclusion key for a request:
+	 * "minifymod.compress.exclude.action." + action
+	 */
 	public static String getCompressionExcludeKey(Request request) {
 		return getCompressionExcludeKey(request.action);
 	}
 
-
+	/**
+	 * returns the standard exclusion key for an action:
+	 * "minifymod.compress.exclude.action." + action
+	 */
 	public static String getCompressionExcludeKey(String action) {
 		return "minifymod.compress.exclude.action." + action;
 	}
 
 
+	/**
+	 * checks if the request calls an excluded action
+	 */
 	public static boolean isExcludedAction(Request request) {
 		return excludedActions.contains(getCompressionExcludeKey(request));
 	}
 	
+	/**
+	 * checks if the action is an excluded action
+	 */
 	public static boolean isExcludedAction(String action) {
 		return excludedActions.contains(getCompressionExcludeKey(action));
 	}
 
 
+	/**
+	 * excludes these action
+	 */
 	public static void excludeAction(String action) {
 		if(!isExcludedAction(action)) {
 			excludedActions.add(getCompressionExcludeKey(action));
@@ -64,7 +80,7 @@ public class Compression {
 
 
 	/**
-	 * Compresses HTML by removing whitespace, etc.
+	 * Compresses HTML by removing whitespace
 	 */
 	// Uses http://code.google.com/p/htmlcompressor/
 	public static String compressHTML(final String input) {
@@ -78,7 +94,7 @@ public class Compression {
 
 
 	/**
-	 * Compresses XML by removing whitespace, etc.
+	 * Compresses XML by removing whitespace
 	 */
 	// Uses http://code.google.com/p/htmlcompressor/
 	public static String compressXML(final String input) {
@@ -92,7 +108,7 @@ public class Compression {
 
 
 	/**
-	 * Compresses CSS by removing whitespace, etc.
+	 * Compresses CSS by removing whitespace
 	 */
 	// YUI compressor is used because it has no dependencies and is very
 	// lightweight.
@@ -107,7 +123,7 @@ public class Compression {
 
 
 	/**
-	 * Compresses JS by removing whitespace, etc.
+	 * Compresses JS by removing whitespace
 	 */
 	// YUI compressor is used because it has no dependencies and is very
 	// lightweight.
@@ -122,8 +138,7 @@ public class Compression {
 
 
 	/**
-	 * @return Whether the request browser supports GZIP encoding and config
-	 * option "optimization.gzip" is true.
+	 * @return Whether the request browser supports GZIP encoding
 	 */
 	public static boolean isGzipSupported(final Http.Request request) {
 		// key must be lower-case.
@@ -132,7 +147,9 @@ public class Compression {
 	}
 	
 	
-
+	/**
+	 * creates a gzipped ByteArrayOutputStream which can be used as response.out
+	 */
 	static ByteArrayOutputStream getGzipStream(final String input) throws IOException {
 		final InputStream inputStream = new ByteArrayInputStream(input.getBytes());
 		final ByteArrayOutputStream stringOutputStream = new ByteArrayOutputStream(input.length());

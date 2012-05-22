@@ -22,6 +22,11 @@ public class MinifyAndGzipResponse extends Controller {
 		}
 	}
 	
+	/**
+	 * this is triggered after rendering is done. It takes the rendered template from response.out,
+	 * creates a gzipped stream for response.out  (if supported by the client), minifies the content
+	 *  and writes the template-string back to response.out
+	 */
 	@Finally
 	static void compress() throws IOException {
 		if(moduleEnabled) {
@@ -55,12 +60,21 @@ public class MinifyAndGzipResponse extends Controller {
 		}
 	}
 
+	/**
+	 * tells if the client supports gzip. Delegates to Compression.class
+	 * just here for easy overriding
+	 */
 	public static boolean isGzipSupported() {
 		return Compression.isGzipSupported(request);
 	}
 	
+	/**
+	 * tells if the current action is an excluded action. Delegates to Compression.class
+	 * just here for easy overriding
+	 */
 	public static boolean isExcluded() {
 		return Compression.isExcludedAction(request);
 	}
+	
 
 }
