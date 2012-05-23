@@ -71,6 +71,24 @@ minifymod.moduleDisabledOnDev = false
 minifymod.minifyEnabled = true
 minifymod.gzipEnabled = true
 
+h2. Behind the scenes
+
+It is really simple:
+
+By adding the line @With(MinifyAndGzipResponse.class) your controller gets another method called compress(). This method is triggered after your template is rendered because it is annotated with @Finally.
+
+This method gets a the outputstream from the current response (response.out) and makes a String with the content of this stream.
+
+After that the content will be minified with googles htmlcompressor or the yui compressor.
+
+The outputstream is replaced by a gzipped one and the necessary headers will be set.
+
+At the end the it writes back the minified content to response.out and after that, everything goes its normal way.
+
+That's it
+
 h2. Planned features
 
 Just leave a comment and I will see what I can do
+
+
