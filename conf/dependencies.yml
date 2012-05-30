@@ -1,4 +1,4 @@
-self: play -> minifymod 1.0.0
+self: play -> minifymod 1.0.1
 
 require:
     - play
