@@ -9,7 +9,7 @@ How To Use It
 Let’s say you have a simple controller wich delivers a hugh site:
 
 	public class MustBeOptimized extends Controller {
-		public static void renderMyHughTemplate() {
+		public static void renderMyHugeTemplate() {
 			render("largeSite.html");
 		}
 	}
@@ -20,7 +20,7 @@ If you want it to get delivered minimized for example by removing unnecessary wh
 
 	@With(MinifyResponse.class)
 	public class IsABitOptimized extends Controller {
-		public static void renderMyHughTemplate() {
+		public static void renderMyHugeTemplate() {
 			render("largeSite.html");
 		}
 	}
@@ -31,7 +31,7 @@ If you want it to get delivered gezipped, you just have to add another single li
 
 	@With(GzipResponse.class)
 	public class ABitMoreOptimized extends Controller {
-		public static void renderMyHughTemplate() {
+		public static void renderMyHugeTemplate() {
 			render("largeSite.html");
 		}
 	}
@@ -42,7 +42,7 @@ However, response size will be reduced most by doing both optimizations:
 
 	@With(MinifyAndGzipResponse.class)
 	public class Optimized extends Controller {
-		public static void renderMyHughTemplate() {
+		public static void renderMyHugeTemplate() {
 			render("largeSite.html");
 		}
 	}
