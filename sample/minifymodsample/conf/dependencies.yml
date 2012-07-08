@@ -2,4 +2,12 @@
 
 require:
     - play
-    - play -> minifymod 1.0.0
+    - mkmod -> minifymod 1.0.2
+
+repositories:
+     - mkmod:
+        type: http
+        artifact: http://dl.dropbox.com/u/17394524/playmodules/[module]-[revision].zip
+        contains:
+        - mkmod -> *
+        
