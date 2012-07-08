@@ -29,7 +29,7 @@ public class GzipResponse extends Controller {
 	static void compress() throws IOException {
 		if(moduleEnabled) {
 			// gzip response if enabled, supported and not excluded
-			if(gzipEnabled && isGzipSupported() && !isExcluded() && response != null && response.contentType != null) {
+			if(gzipEnabled && isGzipSupported() && !isExcluded() && response != null) {
 				// get rendered content
 				String content = response.out.toString();
 				// change to a gzipped stream
