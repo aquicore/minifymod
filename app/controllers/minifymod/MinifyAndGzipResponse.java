@@ -33,7 +33,7 @@ public class MinifyAndGzipResponse extends Controller {
 			// get rendered content
 			String content = response.out.toString();
 			// minify
-			if(minifyEnabled && !isExcluded()) {
+			if(minifyEnabled && !isExcluded() && response != null && response.contentType != null) {
 				// select compression method by contentType
 				if (response.contentType.contains("text/html")) {	// could be "text/html; charset=utf-8"
 					content = Compression.compressHTML(content);
