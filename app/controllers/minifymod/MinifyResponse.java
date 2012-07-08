@@ -26,7 +26,7 @@ public class MinifyResponse extends Controller {
 	 */
 	@Finally
 	static void compress() throws IOException {
-		if(moduleEnabled && minifyEnabled && !isExcluded()) {
+		if(moduleEnabled && minifyEnabled && !isExcluded() && response != null && response.contentType != null) {
 			// get rendered content
 			String content = response.out.toString();
 			// select compression method by contentType
