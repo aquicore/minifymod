@@ -150,7 +150,7 @@ public class Compression {
 	/**
 	 * creates a gzipped ByteArrayOutputStream which can be used as response.out
 	 */
-	static ByteArrayOutputStream getGzipStream(final String input) throws IOException {
+	public static ByteArrayOutputStream getGzipStream(final String input) throws IOException {
 		final InputStream inputStream = new ByteArrayInputStream(input.getBytes());
 		final ByteArrayOutputStream stringOutputStream = new ByteArrayOutputStream(input.length());
 		final OutputStream gzipOutputStream = new GZIPOutputStream(stringOutputStream);
