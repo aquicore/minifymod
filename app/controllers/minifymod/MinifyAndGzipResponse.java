@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import play.Play;
+import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.Finally;
 
@@ -27,7 +28,7 @@ public class MinifyAndGzipResponse extends Controller {
 	 * creates a gzipped stream for response.out  (if supported by the client), minifies the content
 	 *  and writes the template-string back to response.out
 	 */
-	@Finally
+	@After(priority=Integer.MAX_VALUE)
 	static void compress() throws IOException {
 		if(moduleEnabled && response != null) {
 			// get rendered content
