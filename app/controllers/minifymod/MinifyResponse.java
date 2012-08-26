@@ -25,11 +25,14 @@ public class MinifyResponse extends Controller {
 	 * this is triggered after rendering is done. It takes the rendered template from response.out,
 	 * minifies it and writes it back to respone.out
 	 */
-	@After(priority=Integer.MAX_VALUE)
+	@Finally
 	static void compress() throws IOException {
 		if(moduleEnabled && minifyEnabled && !isExcluded() && response != null && response.contentType != null) {
 			// get rendered content
 			String content = response.out.toString();
+			if("".equals(content)) {
+				return; // fix stange chars on suspended requests
+			}
 			// select compression method by contentType
 			if (response.contentType.contains("text/html")) {	// could be "text/html; charset=utf-8"
 				content = Compression.compressHTML(content);

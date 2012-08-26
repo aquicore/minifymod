@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import play.Play;
-import play.mvc.After;
 import play.mvc.Controller;
 import play.mvc.Finally;
 
@@ -26,13 +25,16 @@ public class GzipResponse extends Controller {
 	 * creates a gzipped stream for response.out  (if supported by the client) and writes the template-
 	 * string back to response.out
 	 */
-	@After(priority=Integer.MAX_VALUE)
+	@Finally
 	static void compress() throws IOException {
 		if(moduleEnabled) {
 			// gzip response if enabled, supported and not excluded
 			if(gzipEnabled && isGzipSupported() && !isExcluded() && response != null) {
 				// get rendered content
 				String content = response.out.toString();
+				if("".equals(content)) {
+					return; // fix stange chars on suspended requests
+				}
 				// change to a gzipped stream
 				final ByteArrayOutputStream gzip = Compression.getGzipStream(content);
 				// set response header

@@ -28,11 +28,14 @@ public class MinifyAndGzipResponse extends Controller {
 	 * creates a gzipped stream for response.out  (if supported by the client), minifies the content
 	 *  and writes the template-string back to response.out
 	 */
-	@After(priority=Integer.MAX_VALUE)
+	@Finally
 	static void compress() throws IOException {
 		if(moduleEnabled && response != null) {
 			// get rendered content
 			String content = response.out.toString();
+			if("".equals(content)) {
+				return; // fix stange chars on suspended requests
+			}
 			// minify
 			if(minifyEnabled && !isExcluded() && response.contentType != null) {
 				// select compression method by contentType
