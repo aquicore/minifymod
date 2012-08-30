@@ -70,4 +70,5 @@ The configuration is pretty self explaining. This are the keys. They are all in 
 	
 Planned features
 
-Just leave a comment and I will see what I can do
+ * Configurable transparent minify and gzipping of static assets
+ * Just leave a comment and I will see what I can do
