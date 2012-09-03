@@ -1,5 +1,0 @@
-# Application dependencies
-
-require:
-    - play
-    - play -> minifymod 1.0.2
