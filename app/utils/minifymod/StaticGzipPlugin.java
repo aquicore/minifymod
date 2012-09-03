@@ -21,39 +21,55 @@ import play.vfs.VirtualFile;
 import controllers.minifymod.Compression;
 
 /**
- * Based on https://gist.github.com/2882360
- *
+ * Based on https://gist.github.com/2882360 which seems to be based on minifymod :)
  */
 public class StaticGzipPlugin extends PlayPlugin {
 
+	private static boolean gzipDisabled = false;
+
+	private static boolean minifyDisabled = false;
+
+	private static boolean memcacheDisabled = false;
+
+	static {
+		String prop = Play.configuration.getProperty("minifymod.statics.gzip.disabled", "false");
+		gzipDisabled = Boolean.parseBoolean(prop);
+		prop = Play.configuration.getProperty("minifymod.statics.minify.disabled", "false");
+		minifyDisabled = Boolean.parseBoolean(prop);
+		prop = Play.configuration.getProperty("minifymod.statics.memcache.disabled", "false");
+		memcacheDisabled = Boolean.parseBoolean(prop);
+	}
+
+
 	@Override
-	public boolean serveStatic(VirtualFile file, Http.Request request,
-			Http.Response response) {
+	public boolean serveStatic(VirtualFile file, Http.Request request, Http.Response response) {
 		try {
 			final File localFile = file.getRealFile();
-			String contentType = MimeTypes.getContentType(localFile.getName(),
-					"text/plain");
-			// You don't want to gzip images ;-)
+			String contentType = MimeTypes.getContentType(localFile.getName(), "text/plain");
 			if (contentType.contains("image")) {
-				return false;
+				return false; // You don't want to minify or gzip images
 			}
 			response.setContentTypeIfNotSet(contentType);
 			response = addEtag(request, response, localFile);
-			// minify
-			String key = request.path + localFile.toString();
-			String content = Cache.get(key, String.class);
-			if (content == null) {
+			// minify / cache on prod
+			String content = null;
+			if (memcacheDisabled) { // don't look in cache is disabled
 				content = minify(request, response, localFile);
-				if (Play.mode == Mode.PROD) {
-					Cache.set(key, content, "24h");
+			} else {
+				String key = request.path + localFile.getAbsolutePath();
+				Cache.get(key, String.class);
+				if (content == null) {
+					content = minify(request, response, localFile);
+					if (Play.mode == Mode.PROD) {
+						Cache.set(key, content, "24h");
+					}
 				}
 			}
 
-			// gzip only if supported and not excluded
-			if (Compression.isGzipSupported(request)
-					&& !Compression.isExcludedAction(request)) {
-				final ByteArrayOutputStream gzip = Compression
-						.getGzipStream(content);
+			// gzip only if supported and not excluded or disabled
+			if (Compression.isGzipSupported(request) && !Compression.isExcludedAction(request)
+					&& !gzipDisabled) {
+				final ByteArrayOutputStream gzip = Compression.getGzipStream(content);
 				// set response header
 				response.setHeader("Content-Encoding", "gzip");
 				response.setHeader("Content-Length", gzip.size() + "");
@@ -71,11 +87,12 @@ public class StaticGzipPlugin extends PlayPlugin {
 		return false;
 	}
 
-	private String minify(Http.Request request, Http.Response response,
-			File file) throws IOException {
+
+	private String minify(Http.Request request, Http.Response response, File file)
+			throws IOException {
 		boolean minified = file.getName().contains(".min.");
 		String content = VirtualFile.open(file).contentAsString();
-		if (minified) {
+		if (minified || minifyDisabled) {
 			return content;
 		} else if (!Compression.isExcludedAction(request)) {
 			// select compression method by contentType
@@ -95,21 +112,19 @@ public class StaticGzipPlugin extends PlayPlugin {
 		return content;
 	}
 
-	private static Http.Response addEtag(Http.Request request,
-			Http.Response response, File file) {
+
+	private static Http.Response addEtag(Http.Request request, Http.Response response, File file) {
 		if (Play.mode == Play.Mode.DEV) {
 			response.setHeader(CACHE_CONTROL, "no-cache");
 		} else {
-			String maxAge = Play.configuration.getProperty("http.cacheControl",
-					"3600");
+			String maxAge = Play.configuration.getProperty("http.cacheControl", "3600");
 			if (maxAge.equals("0")) {
 				response.setHeader(CACHE_CONTROL, "no-cache");
 			} else {
 				response.setHeader(CACHE_CONTROL, "max-age=" + maxAge);
 			}
 		}
-		boolean useEtag = Play.configuration
-				.getProperty("http.useETag", "true").equals("true");
+		boolean useEtag = Play.configuration.getProperty("http.useETag", "true").equals("true");
 		long last = file.lastModified();
 		final String etag = "\"" + last + "-" + file.hashCode() + "\"";
 		if (!request.isModified(etag, last)) {
@@ -120,8 +135,7 @@ public class StaticGzipPlugin extends PlayPlugin {
 				response.setHeader(ETAG, etag);
 			}
 		} else {
-			response.setHeader(LAST_MODIFIED, Utils.getHttpDateFormatter()
-					.format(new Date(last)));
+			response.setHeader(LAST_MODIFIED, Utils.getHttpDateFormatter().format(new Date(last)));
 			if (useEtag) {
 				response.setHeader(ETAG, etag);
 			}
