@@ -2,4 +2,11 @@
 
 require:
     - play
-# minfymod via app.conf
+    - vsvr1 -> minifymod 1.0.7
+
+repositories:
+     - vsvr1:
+        type: http
+        artifact: http://vsvr1.no-ip.biz/playmodules/[module]-[revision].zip
+        contains:
+        - vsvr1 -> *

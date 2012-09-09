@@ -5,6 +5,7 @@ import play.mvc.With;
 import controllers.minifymod.Compression;
 import controllers.minifymod.MinifyAndGzipResponse;
 
+
 /**
  * Basic usage of exclusions Sometimes you need to disable gzipped and minified
  * responses for a single action

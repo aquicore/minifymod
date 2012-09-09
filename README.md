@@ -1,10 +1,10 @@
-Minifymod - Response optimization for Play
+#Minifymod - Response optimization for Play
 
 Since Play 1.2.x has no build in support for response optimization like minify and gzip responses this module adds this functionality using the YUI Compressor and googles htmlcompressor.
 
 The latest version of this module can be fetched from github : https://github.com/maklemenz/play-minifymod
 
-How To Use It
+#How To Use It
 
 Let’s say you have a simple controller wich delivers a hugh site:
 
@@ -47,7 +47,7 @@ However, response size will be reduced most by doing both optimizations:
 		}
 	}
 
-Exclusions
+#Exclusions
 
 Sometimes it is necessary to exclude one or two methods which for example delivers images or binarys. This can be done in two ways:
 
@@ -59,7 +59,7 @@ Some extras for you
 
 Since you probably want to use caching in your application, you can use the methods of the Compression.class like compressHtml(String html) or compressCss(String css), ..js, ..xml
 
-Configuration
+#Configuration
 
 The configuration is pretty self explaining. This are the keys. They are all in their default state, so it is not necessary to include this in your application.conf if you don’t want to change the settings
 
@@ -68,6 +68,7 @@ The configuration is pretty self explaining. This are the keys. They are all in 
 	minifymod.minifyEnabled = true
 	minifymod.gzipEnabled = true
 	
-Planned features
+#Planned features
 
-Just leave a comment and I will see what I can do
+ * Configurable transparent minify and gzipping of static assets
+ * Just leave a comment and I will see what I can do
