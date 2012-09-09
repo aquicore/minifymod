@@ -1,73 +1,14 @@
 #{extends 'main.html' /}
 #{set title:'Home' /}
 
-<style>
-	#menu {
-		list-style: none;
-	}
-	
-	#menu li {
-		float: left;
-		margin: 5px;
-		padding: 2px 5px;
-	}
-	
-	#menu a {
-		font-weight: bold;
-		letter-spacing: 2px;
-		color: #444;
-	}
-	
-	#menu a:hover {
-		color: #000;
-	}
-	
-	#siteinfotext {
-		margin: 20px 10px;
-		padding: 20px 10px;
-		border: 1px solid gray;
-		background-color: #e3e3e3;
-		border-radius: 10px;
-	}
-	
-	.clear {
-		clear:both;
-		display:block;
-		overflow:hidden;
-		visibility:hidden;
-		width:0;
-		height:0;
-	}
-	
-	.clearfix:before,.clearfix:after {
-		content:'.';
-		display:block;
-		overflow:hidden;
-		visibility:hidden;
-		font-size:0;
-		line-height:0;
-		width:0;
-		height:0;
-	}
-	
-	.clearfix:after {
-		clear:both;
-	}
-	
-	.clearfix {
-		zoom:1px;
-	}
-
-</style>
-
 <ul id="menu" class="clearfix">
 	
 	
 	<li><a href="@{Minified.index}">Minified Responses</a></li>
 	<li><a href="@{Gzipped.index}">Gzipped Responses</a></li>
 	<li><a href="@{MinifiedAndGzipped.index}">Gzipped and minified Responses</a></li>
-	
 	<li><a href="@{Exclusion.index}">Exclusions</a></li>
+	<li><a href="@{Continuation.index}">Continuation (Async Jobs)</a></li>
 </ul>
 
 <div id="siteinfotext">${text}</div>
@@ -156,7 +97,3 @@ minifymod.gzipEnabled = true
 
 	<p>Just leave a comment and I will see what I can do</p>
 	
-<br><br><br><br><br>
-<h1>Dummycontent</h1>
-<h2>just to have some more content over here ;-)</h2>
-#{welcome /}

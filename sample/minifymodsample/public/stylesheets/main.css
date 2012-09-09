@@ -1,0 +1,60 @@
+	body {
+		font-family: helvetica, arial, sans-serif;
+	}
+
+	#menu {
+		list-style: none;
+	}
+	
+	#menu li {
+		float: left;
+		margin: 5px;
+		padding: 2px 5px;
+	}
+	
+	#menu a {
+		font-weight: bold;
+		letter-spacing: 2px;
+		color: #444;
+	}
+	
+	#menu a:hover {
+		color: #000;
+	}
+	
+	#siteinfotext {
+		margin: 20px 10px;
+		padding: 20px 10px;
+		border: 1px solid gray;
+		background-color: #e3e3e3;
+		border-radius: 10px;
+	}
+	
+	.clear {
+		clear:both;
+		display:block;
+		overflow:hidden;
+		visibility:hidden;
+		width:0;
+		height:0;
+	}
+	
+	.clearfix:before,.clearfix:after {
+		content:'.';
+		display:block;
+		overflow:hidden;
+		visibility:hidden;
+		font-size:0;
+		line-height:0;
+		width:0;
+		height:0;
+	}
+	
+	.clearfix:after {
+		clear:both;
+	}
+	
+	.clearfix {
+		zoom:1px;
+	}
+
