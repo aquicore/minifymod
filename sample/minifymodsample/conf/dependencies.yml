@@ -2,7 +2,7 @@
 
 require:
     - play
-    - vsvr1 -> minifymod 1.0.7
+    - vsvr1 -> minifymod 1.0.8
 
 repositories:
      - vsvr1:
