@@ -125,7 +125,8 @@ public class StaticGzipPlugin extends PlayPlugin {
 			}
 		}
 		boolean useEtag = Play.configuration.getProperty("http.useETag", "true").equals("true");
-		long last = file.lastModified();
+		// fixes https://gist.github.com/2882360#gistcomment-566765
+		long last = file.lastModified() - 1000;
 		final String etag = "\"" + last + "-" + file.hashCode() + "\"";
 		if (!request.isModified(etag, last)) {
 			if (request.method.equals("GET")) {
