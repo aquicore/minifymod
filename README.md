@@ -2,7 +2,7 @@
 
 Since Play 1.2.x has no build in support for response optimization like minify and gzip responses this module adds this functionality using the YUI Compressor and googles htmlcompressor.
 
-The latest version of this module can be fetched from github : https://github.com/maklemenz/play-minifymod
+The latest version of this module can be fetched from github : https://github.com/maklemenz/minifymod
 
 #How To Use It
 
