@@ -16,6 +16,7 @@ import play.PlayPlugin;
 import play.cache.Cache;
 import play.libs.MimeTypes;
 import play.mvc.Http;
+import play.mvc.Http.Header;
 import play.utils.Utils;
 import play.vfs.VirtualFile;
 import controllers.minifymod.Compression;
@@ -49,6 +50,14 @@ public class StaticGzipPlugin extends PlayPlugin {
 			if (contentType.contains("image")) {
 				return false; // You don't want to minify or gzip images
 			}
+			/*
+			 * google wants this: "Instructs proxy servers to cache two versions
+			 * of the resource: one compressed, and one uncompressed. This helps
+			 * avoid issues with public proxies that do not detect the presence
+			 * of a Content-Encoding header properly."
+			 */
+			response.headers.put("Vary", new Header("Vary", "Accept-Encoding"));
+
 			response.setContentTypeIfNotSet(contentType);
 			response = addEtag(request, response, localFile);
 			// minify / cache on prod
