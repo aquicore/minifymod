@@ -1,0 +1,4 @@
+## This is only an example. The files are searched in public/stylesheets
+bootstrap.css
+jquery/jquery.dataTables.css
+main.css

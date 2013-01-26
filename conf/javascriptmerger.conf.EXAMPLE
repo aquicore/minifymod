@@ -1,0 +1,6 @@
+## This is only an example. The files are searched in public/stylesheets
+jquery/jquery-1.8.3.min.js
+bootstrap.min.js
+jquery/jquery.dataTables.min.js
+textarea-autosize.min.js
+main.js
