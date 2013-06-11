@@ -11,7 +11,6 @@ import java.util.Date;
 
 import play.Logger;
 import play.Play;
-import play.Play.Mode;
 import play.PlayPlugin;
 import play.cache.Cache;
 import play.libs.MimeTypes;
@@ -22,7 +21,8 @@ import play.vfs.VirtualFile;
 import controllers.minifymod.Compression;
 
 /**
- * Based on https://gist.github.com/2882360 which seems to be based on minifymod :)
+ * Based on https://gist.github.com/2882360 which seems to be based on minifymod
+ * :)
  */
 public class StaticGzipPlugin extends PlayPlugin {
 
@@ -33,20 +33,24 @@ public class StaticGzipPlugin extends PlayPlugin {
 	private static boolean memcacheDisabled = false;
 
 	static {
-		String prop = Play.configuration.getProperty("minifymod.statics.gzip.disabled", "false");
+		String prop = Play.configuration.getProperty(
+				"minifymod.statics.gzip.disabled", "false");
 		gzipDisabled = Boolean.parseBoolean(prop);
-		prop = Play.configuration.getProperty("minifymod.statics.minify.disabled", "false");
+		prop = Play.configuration.getProperty(
+				"minifymod.statics.minify.disabled", "false");
 		minifyDisabled = Boolean.parseBoolean(prop);
-		prop = Play.configuration.getProperty("minifymod.statics.memcache.disabled", "false");
+		prop = Play.configuration.getProperty(
+				"minifymod.statics.memcache.disabled", "false");
 		memcacheDisabled = Boolean.parseBoolean(prop);
 	}
 
-
 	@Override
-	public boolean serveStatic(VirtualFile file, Http.Request request, Http.Response response) {
+	public boolean serveStatic(VirtualFile file, Http.Request request,
+			Http.Response response) {
 		try {
 			final File localFile = file.getRealFile();
-			String contentType = MimeTypes.getContentType(localFile.getName(), "text/plain");
+			String contentType = MimeTypes.getContentType(localFile.getName(),
+					"text/plain");
 			if (contentType.contains("image")) {
 				return false; // You don't want to minify or gzip images
 			}
@@ -58,27 +62,46 @@ public class StaticGzipPlugin extends PlayPlugin {
 			 */
 			response.headers.put("Vary", new Header("Vary", "Accept-Encoding"));
 
+			// gzip only if supported and not excluded or disabled
+			boolean useGzip = Compression.isGzipSupported(request)
+					&& !Compression.isExcludedAction(request) && !gzipDisabled;
+
+			String key = request.path + localFile.getAbsolutePath();
+			String keyTimeModified = "time:" + key;
+			String gzipKey = "gzip" + key;
+
 			response.setContentTypeIfNotSet(contentType);
 			response = addEtag(request, response, localFile);
+
 			// minify / cache on prod
 			String content = null;
 			if (memcacheDisabled) { // don't look in cache is disabled
 				content = minify(request, response, localFile);
 			} else {
-				String key = request.path + localFile.getAbsolutePath();
-				Cache.get(key, String.class);
-				if (content == null) {
+				Long cachedModifiedTime = Cache
+						.get(keyTimeModified, Long.class);
+				content = Cache.get(key, String.class);
+				if (content == null || cachedModifiedTime == null
+						|| cachedModifiedTime < file.lastModified()) {
 					content = minify(request, response, localFile);
-					if (Play.mode == Mode.PROD) {
-						Cache.set(key, content, "24h");
-					}
+					Cache.set(key, content, "24h");
+					Cache.set(keyTimeModified, file.lastModified());
+					Cache.delete(gzipKey);
 				}
 			}
 
-			// gzip only if supported and not excluded or disabled
-			if (Compression.isGzipSupported(request) && !Compression.isExcludedAction(request)
-					&& !gzipDisabled) {
-				final ByteArrayOutputStream gzip = Compression.getGzipStream(content);
+			if (useGzip) {
+
+				byte[] cachedValue = Cache.get(gzipKey, byte[].class);
+				final ByteArrayOutputStream gzip;
+				if (cachedValue != null) {
+					gzip = new ByteArrayOutputStream(cachedValue.length);
+					gzip.write(cachedValue);
+				} else {
+					gzip = Compression.getGzipStream(content);
+					cachedValue = gzip.toByteArray();
+					Cache.set(gzipKey, cachedValue);
+				}
 				// set response header
 				response.setHeader("Content-Encoding", "gzip");
 				response.setHeader("Content-Length", gzip.size() + "");
@@ -91,14 +114,12 @@ public class StaticGzipPlugin extends PlayPlugin {
 			}
 		} catch (Exception e) {
 			Logger.error(e, "Error when Gzipping response: %s", e.getMessage());
-
 		}
 		return false;
 	}
 
-
-	private String minify(Http.Request request, Http.Response response, File file)
-			throws IOException {
+	private String minify(Http.Request request, Http.Response response,
+			File file) throws IOException {
 		boolean minified = file.getName().contains(".min.");
 		String content = VirtualFile.open(file).contentAsString();
 		if (minified || minifyDisabled) {
@@ -121,19 +142,21 @@ public class StaticGzipPlugin extends PlayPlugin {
 		return content;
 	}
 
-
-	private static Http.Response addEtag(Http.Request request, Http.Response response, File file) {
+	private static Http.Response addEtag(Http.Request request,
+			Http.Response response, File file) {
 		if (Play.mode == Play.Mode.DEV) {
 			response.setHeader(CACHE_CONTROL, "no-cache");
 		} else {
-			String maxAge = Play.configuration.getProperty("http.cacheControl", "3600");
+			String maxAge = Play.configuration.getProperty("http.cacheControl",
+					"3600");
 			if (maxAge.equals("0")) {
 				response.setHeader(CACHE_CONTROL, "no-cache");
 			} else {
 				response.setHeader(CACHE_CONTROL, "max-age=" + maxAge);
 			}
 		}
-		boolean useEtag = Play.configuration.getProperty("http.useETag", "true").equals("true");
+		boolean useEtag = Play.configuration
+				.getProperty("http.useETag", "true").equals("true");
 		// fixes https://gist.github.com/2882360#gistcomment-566765
 		long last = file.lastModified() - 1000;
 		final String etag = "\"" + last + "-" + file.hashCode() + "\"";
@@ -145,7 +168,8 @@ public class StaticGzipPlugin extends PlayPlugin {
 				response.setHeader(ETAG, etag);
 			}
 		} else {
-			response.setHeader(LAST_MODIFIED, Utils.getHttpDateFormatter().format(new Date(last)));
+			response.setHeader(LAST_MODIFIED, Utils.getHttpDateFormatter()
+					.format(new Date(last)));
 			if (useEtag) {
 				response.setHeader(ETAG, etag);
 			}
